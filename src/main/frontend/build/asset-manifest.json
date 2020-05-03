@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.47271137.css",
+    "main.js": "/static/js/main.6d923d2c.js",
+    "main.js.map": "/static/js/main.6d923d2c.js.map",
+    "signIn.css": "/static/css/signIn.47271137.css",
+    "signIn.js": "/static/js/signIn.e6ad1129.js",
+    "signIn.js.map": "/static/js/signIn.e6ad1129.js.map",
+    "signUp.css": "/static/css/signUp.47271137.css",
+    "signUp.js": "/static/js/signUp.45f9ea8a.js",
+    "signUp.js.map": "/static/js/signUp.45f9ea8a.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.9091498dade7b683af8b661415ab45ee.js": "/precache-manifest.9091498dade7b683af8b661415ab45ee.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.47271137.css.map": "/static/css/main.47271137.css.map",
+    "static/css/signIn.47271137.css.map": "/static/css/signIn.47271137.css.map",
+    "static/css/signUp.47271137.css.map": "/static/css/signUp.47271137.css.map",
+    "static/js/main.6d923d2c.js.LICENSE.txt": "/static/js/main.6d923d2c.js.LICENSE.txt",
+    "static/js/signIn.e6ad1129.js.LICENSE.txt": "/static/js/signIn.e6ad1129.js.LICENSE.txt",
+    "static/js/signUp.45f9ea8a.js.LICENSE.txt": "/static/js/signUp.45f9ea8a.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/roboto-latin-900italic.ebf6d164.woff2"
+  },
+  "entrypoints": [
+    "static/css/main.47271137.css",
+    "static/js/main.6d923d2c.js"
+  ]
+}
