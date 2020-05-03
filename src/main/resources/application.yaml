@@ -1,0 +1,30 @@
+app:
+  origins:
+    - http://localhost:3000
+  signup:
+    redirectUrl:
+      success: http://localhost:3000/profile
+  signin:
+    redirectUrl:
+      success: http://localhost:3000/profile
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: f854fd43fccec20743e9
+            clientSecret: a45af9592fe5a85493520c38d9b9605967cb68d7
+            scope:
+              - user:email
+              - read:user
+          facebook:
+            clientId: 2356268621062528
+            clientSecret: 93084d7637fdbf34be5078a4e202170e #TODO: CHANGE.....
+            scope:
+              - email
+              - public_profile
+#logging:
+#  level:
+#    root: debug
