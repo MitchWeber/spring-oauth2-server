@@ -28,7 +28,7 @@ public class PublicUser implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.unmodifiableList(this.authorities);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.github.mitchweber.oauth2server.config;
 
+import com.github.mitchweber.oauth2server.controller.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.github.mitchweber.oauth2server.controller.OAuth2AuthenticationSuccessHandler;
 import com.github.mitchweber.oauth2server.repository.IUserRepository;
-import com.github.mitchweber.oauth2server.repository.ListUserRepository;
 import com.github.mitchweber.oauth2server.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,29 +27,34 @@ import java.util.Arrays;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${app.signup.redirectUrl.success}")
-    private String signUpRedirectUrlSuccess;
+    @Autowired
+    private IUserRepository userRepository;
 
-    @Value("${app.signin.redirectUrl.success}")
-    private String loginRedirectSuccessUrl;
+    @Autowired
+    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler("/");
 
     @Bean
-    public IUserRepository userRepository() {
-        return new ListUserRepository();
-    }
-
-    @Bean
     @Override
     public UserService userDetailsService() {
-        return new UserService(userRepository());
+        return new UserService(userRepository);
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    /*
+      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
+      the authorization request. But, since our service is stateless, we can't save it in
+      the session. We'll save the request in a Base64 encoded cookie instead.
+    */
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Override
@@ -68,20 +75,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(a -> a
                         .antMatchers("/",
                                 "/error",
-                                "/login",
+                                "/oauth/token",
                                 "/signup",
                                 "/static/**",
                                 "/favicon.ico",
                                 "/manifest.json",
                                 "/asset-manifest.json",
                                 "/*.js").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .logout(l -> l
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
                 .cors()
+                .configurationSource(corsConfigurationSource())
                 .and()
                 .csrf(c -> c.disable() // TODO: Needed... actually it is just an API
                 )
@@ -89,10 +97,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
                 .oauth2Login()
-                .defaultSuccessUrl(signUpRedirectUrlSuccess)
-                .userInfoEndpoint()
-                .userService(userDetailsService())
+                .authorizationEndpoint()
+                .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
+                .userInfoEndpoint()
+                    .userService(userDetailsService())
+                .and()
+                .successHandler(oAuth2AuthenticationSuccessHandler)
                 .failureHandler((request, response, exception) -> {
                     request.getSession().setAttribute("error.message", exception.getMessage());
                     handler.onAuthenticationFailure(request, response, exception);
@@ -100,15 +111,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // TODO: Externalize into application yaml
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhosthost:8080"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+        configuration.addExposedHeader("Access-Control-Allow-Origin");
+        configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization", "Host"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**/*", configuration);
         return source;
     }
 }

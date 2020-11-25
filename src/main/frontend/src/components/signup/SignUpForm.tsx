@@ -55,7 +55,7 @@ export const SignUpForm = () => {
 
         setErrors(initialErrorsState);
 
-        await axios.post(`${process.env.REACT_APP_SELF_URL}/signup`, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/signup`, {
             firstName,
             lastName,
             email,

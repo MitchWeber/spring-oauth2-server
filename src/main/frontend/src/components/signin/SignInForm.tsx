@@ -11,6 +11,7 @@ import Link from "@material-ui/core/Link";
 import {makeStyles} from "@material-ui/core/styles";
 import axios from "axios";
 import {ErrorParser} from "../ErrorParser";
+import * as qs from "qs";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,10 +52,18 @@ export const SignInForm = () => {
         setErrors(initialErrorsState);
         setUnknownErrorMessage(defaultErrorMessage);
 
+        const data = {
+            password,
+            username: email,
+            grant_type: "password",
+            client_id: "clientIdPassword"
+        }
+
         // TODO: Continue!!!!
-        await axios.post(`${process.env.REACT_APP_SELF_URL}/login`, {username: email, password})
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/oauth/token`, qs.stringify(data))
             .then(resp => console.log(resp))
             .catch(error => {
+                console.log(error);
                 if (error.response && error.response.data) {
                     setErrors(ErrorParser.parse(error.response.data.errors));
                 } else {

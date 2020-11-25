@@ -28,7 +28,7 @@ export const SocialSignUp = () => {
 const socialSignupButton = (props: { label: string, href: string }) => {
     console.log(window.location.origin);
     return (
-        <Button variant="contained" fullWidth color="primary" href={`${process.env.REACT_APP_SELF_URL}${props.href}`}>
+        <Button variant="contained" fullWidth color="primary" href={`${process.env.REACT_APP_BACKEND_URL}${props.href}`}>
             {props.label}
         </Button>
     )

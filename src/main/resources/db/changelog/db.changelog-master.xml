@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="create-user-id-sequence" author="michael.weber">
+        <createSequence sequenceName="USER_ID_SEQ"
+                        startValue="1000" incrementBy="1" />
+    </changeSet>
+    <changeSet id="create-user-table" author="michael.weber">
+        <createTable tableName="USER">
+            <column name="ID" type="NUMBER(13)" defaultValueComputed="USER_ID_SEQ.NEXTVAL">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="firstname" type="varchar2(255)" />
+            <column name="lastname" type="varchar2(255)" />
+            <column name="email" type="varchar2(255)" />
+            <column name="terms_of_use" type="boolean" />
+            <column name="email_verified" type="boolean" />
+            <column name="password" type="varchar2(4000)" />
+            <column name="provider" type="varchar2(4000)" />
+            <column name="provider_id" type="varchar2(4000)" />
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

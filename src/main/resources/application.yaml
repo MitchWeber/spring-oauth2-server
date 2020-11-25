@@ -1,14 +1,12 @@
 app:
   origins:
     - http://localhost:3000
-  signup:
-    redirectUrl:
-      success: http://localhost:3000/profile
-  signin:
-    redirectUrl:
-      success: http://localhost:3000/profile
 
 spring:
+  liquibase.change-log: classpath:/db/changelog/db.changelog-master.xml
+  datasource.url: jdbc:h2:file:/Users/michael/Developer/other/oAuth2/spring-oauth2-server/db;AUTO_SERVER=true
+  h2.console.enabled: true
+
   security:
     oauth2:
       client:
@@ -25,6 +23,6 @@ spring:
             scope:
               - email
               - public_profile
-#logging:
-#  level:
-#    root: debug
+logging:
+  level:
+    root: debug

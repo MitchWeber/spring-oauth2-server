@@ -58,6 +58,10 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         return publicUser;
     }
 
+    public User loadUser(String provider, String providerId) {
+        return userRepository.findByProviderIdAndProvider(providerId, provider).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.getByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -75,19 +79,17 @@ public class UserService extends DefaultOAuth2UserService implements UserDetails
         if (userRepository.existsByEmail(userDetails.getUsername())) {
             throw new UserAlreadyExistsException();
         }
-        System.out.println(userDetails.toString());
         userRepository.save((User) userDetails);
     }
 
     @Override
     public void updateUser(UserDetails userDetails) {
-        System.out.println(userDetails.toString());
-        userRepository.update((User) userDetails);
+        userRepository.save((User) userDetails);
     }
 
     @Override
     public void deleteUser(String email) {
-        userRepository.delete(email);
+        userRepository.deleteByEmail(email);
     }
 
     @Override

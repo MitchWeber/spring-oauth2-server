@@ -3,12 +3,17 @@ package com.github.mitchweber.oauth2server.aggregate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.util.*;
 
+@Entity
 public class User implements UserDetails {
 
     private static final String DEFAULT_ROLE_PREFIX = "ROLE_";
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ID_SEQ")
+    @SequenceGenerator(name = "USER_ID_SEQ", sequenceName = "USER_ID_SEQ", allocationSize = 1)
     private Long id;
 
     private String firstname;
@@ -27,7 +32,7 @@ public class User implements UserDetails {
 
     private String providerId;
 
-    private Map<String, Object> attributes;
+    protected User() {}
 
     public User(String email, String providerId, String provider) {
         this.email = email;
@@ -71,6 +76,10 @@ public class User implements UserDetails {
         return email;
     }
 
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
     public boolean isEmailVerified() {
         return emailVerified;
     }
@@ -81,10 +90,6 @@ public class User implements UserDetails {
 
     public String getProviderId() {
         return providerId;
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
     }
 
     @Override
@@ -113,6 +118,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public String getFullName() {
+        return (this.firstname + " " + this.lastname).trim();
     }
 
     @Override
@@ -146,8 +155,7 @@ public class User implements UserDetails {
                 ", emailVerified=" + emailVerified +
                 ", password='" + password + '\'' +
                 ", provider='" + provider + '\'' +
-                ", providerId='" + providerId + '\'' +
-                ", attributes=" + attributes +
+                ", providerId='" + providerId +
                 '}';
     }
 }

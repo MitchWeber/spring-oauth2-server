@@ -8,8 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties
 public class Oauth2SpringTutorialApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Oauth2SpringTutorialApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Oauth2SpringTutorialApplication.class, args);
+    }
 
 }
